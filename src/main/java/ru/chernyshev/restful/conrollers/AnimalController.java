@@ -1,34 +1,26 @@
 package ru.chernyshev.restful.conrollers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import ru.chernyshev.restful.dto.AnimalTypeDto;
-import ru.chernyshev.restful.service.AnimalTypeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.chernyshev.restful.dto.AnimalDto;
+import ru.chernyshev.restful.service.AnimalService;
 
 @RestController
 @RequestMapping("/animals")
 public class AnimalController {
 
     @Autowired
-    private AnimalTypeService animalTypeService;
+    private AnimalService animalService;
 
-    @PostMapping("/types")
-    public AnimalTypeDto createAnimalType(@RequestBody AnimalTypeDto animalTypeDto) {
-        return animalTypeService.createAnimalType(animalTypeDto);
-    }
+    @PostMapping
+    public ResponseEntity<AnimalDto> createAnimal(@RequestBody AnimalDto dto) {
 
-    @GetMapping("/types/{typeId}")
-    public AnimalTypeDto getAnimalType(@PathVariable Long typeId) {
-        return animalTypeService.getAnimalType(typeId);
-    }
-
-    @PutMapping("/types/{typeId}")
-    public AnimalTypeDto changeAnimalType(@PathVariable Long typeId, @RequestBody AnimalTypeDto animalTypeDto) {
-        return animalTypeService.setAnimalType(typeId, animalTypeDto);
-    }
-
-    @DeleteMapping("/types/{typeId}")
-    public void deleteAnimalType(@PathVariable Long typeId) {
-        animalTypeService.deleteAnimalType(typeId);
+        AnimalDto animalDto = animalService.createAnimal(dto);
+        return new ResponseEntity<AnimalDto>(animalDto, HttpStatus.CREATED);
     }
 }

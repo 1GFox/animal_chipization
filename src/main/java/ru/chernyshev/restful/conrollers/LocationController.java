@@ -1,5 +1,6 @@
 package ru.chernyshev.restful.conrollers;
 
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.chernyshev.restful.dto.LocationDto;
@@ -18,17 +19,17 @@ public class LocationController {
     }
 
     @GetMapping("/{locationId}")
-    public LocationDto getLocation(@PathVariable Long locationId) {
+    public LocationDto getLocation(@PathVariable @Min(1) Long locationId) {
         return locationService.getLocation(locationId);
     }
 
     @PutMapping("/{locationId}")
-    public LocationDto changeLocation(@PathVariable Long locationId, @RequestBody LocationDto newLocationInfo) {
+    public LocationDto changeLocation(@PathVariable @Min(1) Long locationId, @RequestBody LocationDto newLocationInfo) {
         return locationService.changeLocation(locationId, newLocationInfo);
     }
 
     @DeleteMapping("/{locationId}")
-    public void deleteLocation(@PathVariable Long locationId) {
+    public void deleteLocation(@PathVariable @Min(1) Long locationId) {
         locationService.deleteLocation(locationId);
     }
 }
