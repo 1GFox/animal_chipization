@@ -21,4 +21,9 @@ public class AccountController {
     public AccountDto updateAccount(@PathVariable Integer accountId, @RequestBody AccountDto newAccountInfo) {
         return accountService.updateAccountInfo(accountId, newAccountInfo);
     }
+
+    @DeleteMapping("/{accountId}")
+    public void deleteAccount(@PathVariable Integer accountId) {
+        accountService.deleteAccount(accountId);
+    }
 }

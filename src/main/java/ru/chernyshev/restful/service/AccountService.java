@@ -50,4 +50,11 @@ public class AccountService {
 
         return accountMapper.toDto(account);
     }
+
+    public void deleteAccount(Integer id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + id));
+
+        accountRepository.delete(account);
+    }
 }
