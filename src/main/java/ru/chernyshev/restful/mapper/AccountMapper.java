@@ -11,4 +11,5 @@ public class AccountMapper implements Mapper<Account, AccountDto> {
     public AccountDto toDto(Account account) {
         return new AccountDto(account.getId(), account.getFirstName(), account.getLastName(), account.getEmail(), null);
     }
+
 }

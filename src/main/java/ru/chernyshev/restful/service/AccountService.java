@@ -36,4 +36,18 @@ public class AccountService {
                 .map(accountMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + id));
     }
+
+    public AccountDto updateAccountInfo(Integer id, AccountDto newAccountInfo) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + id));
+
+        account.setFirstName(newAccountInfo.getFirstName());
+        account.setLastName(newAccountInfo.getLastName());
+        account.setEmail(newAccountInfo.getEmail());
+        account.setPassword(newAccountInfo.getPassword());
+
+        accountRepository.save(account);
+
+        return accountMapper.toDto(account);
+    }
 }
