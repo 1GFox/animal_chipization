@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.chernyshev.restful.dto.AccountDto;
 import ru.chernyshev.restful.service.AccountService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
@@ -26,5 +28,16 @@ public class AccountController {
     @DeleteMapping("/{accountId}")
     public void deleteAccount(@PathVariable @Min(1) Integer accountId) {
         accountService.deleteAccount(accountId);
+    }
+
+    @GetMapping("/search")
+    public List<AccountDto> searchAccounts(@RequestParam(required = false) String firstName,
+                                           @RequestParam(required = false) String lastName,
+                                           @RequestParam(required = false) String email,
+                                           @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                           @RequestParam(defaultValue = "10") @Min(1) Integer size) {
+
+        return accountService.searchAccounts(firstName, lastName, email, from, size);
+
     }
 }

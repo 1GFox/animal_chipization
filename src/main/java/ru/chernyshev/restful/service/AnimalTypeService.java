@@ -33,11 +33,13 @@ public class AnimalTypeService {
                 .orElseThrow(() -> new NotFoundException("Animal type with this id has not found: " + id));
     }
 
-    public AnimalTypeDto setAnimalType(Long id, AnimalTypeDto dto) {
+    public AnimalTypeDto updateAnimalType(Long id, AnimalTypeDto dto) {
         AnimalType animalType = animalTypeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Animal type with this id has not found: " + id));
 
-        animalType.setType(dto.getType());
+        if (dto.getType() != null){
+            animalType.setType(dto.getType());
+        }
 
         animalTypeRepository.save(animalType);
 

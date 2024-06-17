@@ -34,12 +34,17 @@ public class LocationService {
                 .orElseThrow(() -> new NotFoundException("Location with this id has not found: " + id));
     }
 
-    public LocationDto changeLocation(Long id, LocationDto newLocationInfo) {
+    public LocationDto updateLocation(Long id, LocationDto dto) {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Location with this id has not found: " + id));
 
-        location.setLongitude(newLocationInfo.getLongitude());
-        location.setLatitude(newLocationInfo.getLatitude());
+        if (dto.getLongitude() != null) {
+            location.setLongitude(dto.getLongitude());
+        }
+        if (dto.getLatitude() != null) {
+            location.setLatitude(dto.getLatitude());
+        }
+
 
         locationRepository.save(location);
 
@@ -51,7 +56,6 @@ public class LocationService {
                 .orElseThrow(() -> new NotFoundException("Location with this id has not found: " + id));
         locationRepository.delete(location);
     }
-
 
 
 }

@@ -2,6 +2,8 @@ package ru.chernyshev.restful.conrollers;
 
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.chernyshev.restful.dto.LocationDto;
 import ru.chernyshev.restful.service.LocationService;
@@ -14,22 +16,24 @@ public class LocationController {
     private LocationService locationService;
 
     @PostMapping
-    public LocationDto setLocation(@RequestBody LocationDto locationDto) {
-        return locationService.setLocation(locationDto);
+    public ResponseEntity<LocationDto> setLocation(@RequestBody LocationDto locationDto) {
+        LocationDto dto = locationService.setLocation(locationDto);
+
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{locationId}")
-    public LocationDto getLocation(@PathVariable @Min(1) Long locationId) {
-        return locationService.getLocation(locationId);
+    @GetMapping("/{pointId}")
+    public LocationDto getLocation(@PathVariable @Min(1) Long pointId) {
+        return locationService.getLocation(pointId);
     }
 
-    @PutMapping("/{locationId}")
-    public LocationDto changeLocation(@PathVariable @Min(1) Long locationId, @RequestBody LocationDto newLocationInfo) {
-        return locationService.changeLocation(locationId, newLocationInfo);
+    @PutMapping("/{pointId}")
+    public LocationDto changeLocation(@PathVariable @Min(1) Long pointId, @RequestBody LocationDto newLocationInfo) {
+        return locationService.updateLocation(pointId, newLocationInfo);
     }
 
-    @DeleteMapping("/{locationId}")
-    public void deleteLocation(@PathVariable @Min(1) Long locationId) {
-        locationService.deleteLocation(locationId);
+    @DeleteMapping("/{pointId}")
+    public void deleteLocation(@PathVariable @Min(1) Long pointId) {
+        locationService.deleteLocation(pointId);
     }
 }
