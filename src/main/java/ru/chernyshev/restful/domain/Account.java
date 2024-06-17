@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "account")
-@SequenceGenerator(name = "AccountSeqGen", sequenceName = "account_seq", allocationSize = 1)
+@SequenceGenerator(name = "accountSeqGen", sequenceName = "account_seq", allocationSize = 1)
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AccountSeqGen")

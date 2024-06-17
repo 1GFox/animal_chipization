@@ -2,10 +2,9 @@ package ru.chernyshev.restful.conrollers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.chernyshev.restful.dto.AccountDto;
 import ru.chernyshev.restful.service.AccountService;
 
@@ -19,7 +18,9 @@ public class RegistrationController {
 
 
     @PostMapping
-    public AccountDto registration(@RequestBody AccountDto accountDto) {
-        return accountService.create(accountDto);
+    public ResponseEntity<AccountDto> registration(@RequestBody AccountDto accountDto) {
+
+        AccountDto dto = accountService.create(accountDto);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 }
