@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.chernyshev.restful.domain.Account;
 import ru.chernyshev.restful.dto.AccountDto;
 import ru.chernyshev.restful.exception.NotFoundException;
-import ru.chernyshev.restful.mapper.AccountMapper;
+import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.AccountRepository;
 import ru.chernyshev.restful.repository.CustomAccountRepository;
 
@@ -17,7 +17,7 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
-    private AccountMapper accountMapper;
+    private Mapper<Account, AccountDto> accountMapper;
     @Autowired
     private CustomAccountRepository customAccountRepository;
 

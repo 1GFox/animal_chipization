@@ -52,10 +52,7 @@ public class Animal {
     private List<AnimalType> animalTypes = new ArrayList<>();
 
 
-//    @ManyToMany
-//    @JoinTable(name = "animal_visited_locations",
-//    joinColumns = @JoinColumn(name = "chipping_location_id"),
-//    inverseJoinColumns = @JoinColumn(name = "location_id"))
-//    private List<Location> visitedLocations = new ArrayList<>();
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.REMOVE)
+    private List<VisitedLocation> visitedLocations = new ArrayList<>();
 
 }
