@@ -33,9 +33,9 @@ public class AnimalMapper implements Mapper<Animal, AnimalDto> {
                 animal.getLifeStatus(),
                 animal.getChippingDateTime(),
                 animal.getChipper().getId(),
-                animalTypes,
                 animal.getDeathDateTime(),
                 animal.getChippingLocation().getId(),
+                animalTypes,
                 visitedLocations
         );
     }

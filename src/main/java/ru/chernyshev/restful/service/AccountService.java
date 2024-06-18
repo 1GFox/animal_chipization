@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.chernyshev.restful.domain.Account;
 import ru.chernyshev.restful.dto.AccountDto;
+import ru.chernyshev.restful.exception.DataConflictException;
+import ru.chernyshev.restful.exception.InaccessibleEntityException;
 import ru.chernyshev.restful.exception.NotFoundException;
 import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.AccountRepository;
@@ -22,6 +24,11 @@ public class AccountService {
     private CustomAccountRepository customAccountRepository;
 
     public AccountDto create(AccountDto dto) {
+
+        boolean check = accountRepository.existsByEmail(dto.getEmail());
+        if (check){
+            throw new DataConflictException("Account with this email already exists");
+        }
 
         Account account = new Account();
 
@@ -44,20 +51,12 @@ public class AccountService {
 
     public AccountDto updateAccountInfo(Integer id, AccountDto dto) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + id));
+                .orElseThrow(() -> new InaccessibleEntityException("Account with this id has not found: " + id));
 
-        if (dto.getFirstName() != null){
-            account.setFirstName(dto.getFirstName());
-        }
-        if (dto.getLastName() != null){
-            account.setLastName(dto.getLastName());
-        }
-        if (dto.getEmail() != null){
-            account.setEmail(dto.getEmail());
-        }
-        if (dto.getPassword() != null){
-            account.setPassword(dto.getPassword());
-        }
+        account.setFirstName(dto.getFirstName());
+        account.setLastName(dto.getLastName());
+        account.setEmail(dto.getEmail());
+        account.setPassword(dto.getPassword());
 
 
         accountRepository.save(account);
@@ -67,7 +66,7 @@ public class AccountService {
 
     public void deleteAccount(Integer id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + id));
+                .orElseThrow(() -> new InaccessibleEntityException("Account with this id has not found: " + id));
 
         accountRepository.delete(account);
     }

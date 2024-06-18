@@ -47,10 +47,9 @@ public class ImplVisitedLocRepository implements CustomVisitedLocRepository {
             predicates.add(predicateEndDate);
         }
 
-        for (Predicate predicate : predicates) {
-            query.where(predicate)
-                    .orderBy(criteriaBuilder.asc(root.get("dateTime")));
-        }
+        Predicate globalPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        query.where(globalPredicate)
+                .orderBy(criteriaBuilder.asc(root.get("dateTime")));
 
 
         return entityManager.createQuery(query)

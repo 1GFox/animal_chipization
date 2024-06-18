@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.chernyshev.restful.domain.*;
 import ru.chernyshev.restful.dto.AnimalDto;
 import ru.chernyshev.restful.dto.ChangeAnimalTypeDto;
+import ru.chernyshev.restful.exception.InvalidDataException;
 import ru.chernyshev.restful.exception.NotFoundException;
 import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.*;
@@ -32,20 +33,31 @@ public class AnimalService {
 
     public AnimalDto createAnimal(AnimalDto dto) {
 
+        List<Long> listOfTypes = dto.getAnimalTypes();
+
+        if (listOfTypes.isEmpty()) {
+            throw new InvalidDataException("Size of listTypes have to be greater then 0");
+        }
+
+        for (Long typeId : listOfTypes) {
+            if (typeId == null || typeId <= 0) {
+                throw new InvalidDataException("Type id have to be greater than 0 and not be null");
+            }
+        }
+
+
         Animal animal = new Animal();
         animal.setHeight(dto.getHeight());
         animal.setLength(dto.getLength());
         animal.setWeight(dto.getWeight());
         animal.setGender(dto.getGender());
         animal.setLifeStatus(LifeStatus.ALIVE);
-        animal.setDeathDateTime(dto.getDeathDateTime());
-        animal.setChippingDateTime(dto.getChippingDateTime());
+        animal.setChippingDateTime(LocalDateTime.now());
 
 
         Long chippingLocationId = dto.getChippingLocationId();
         Location location = locationRepository.findById(chippingLocationId)
                 .orElseThrow(() -> new NotFoundException("Location with this id has not found: " + chippingLocationId));
-
         animal.setChippingLocation(location);
 
 
@@ -78,33 +90,33 @@ public class AnimalService {
     public AnimalDto updateAnimalInfo(Long id, AnimalDto dto) {
         Animal animal = animalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Animal with this id has not found: " + id));
-        if (dto.getWeight() != null){
+        if (dto.getWeight() != null) {
             animal.setWeight(dto.getWeight());
         }
-        if (dto.getHeight() != null){
+        if (dto.getHeight() != null) {
             animal.setHeight(dto.getHeight());
         }
-        if (dto.getLength() != null){
+        if (dto.getLength() != null) {
             animal.setLength(dto.getLength());
         }
-        if (dto.getGender() != null){
+        if (dto.getGender() != null) {
             animal.setGender(dto.getGender());
         }
-        if (dto.getLifeStatus() != null && dto.getLifeStatus() == LifeStatus.DEAD){
+        if (dto.getLifeStatus() != null && dto.getLifeStatus() == LifeStatus.DEAD) {
             animal.setLifeStatus(dto.getLifeStatus());
             animal.setDeathDateTime(LocalDateTime.now());
         }
-        if (animal.getLifeStatus() == LifeStatus.DEAD && dto.getLifeStatus() == LifeStatus.ALIVE){
+        if (animal.getLifeStatus() == LifeStatus.DEAD && dto.getLifeStatus() == LifeStatus.ALIVE) {
             animal.setLifeStatus(dto.getLifeStatus());
             animal.setDeathDateTime(null);
         }
-        if (dto.getChipperId() != null){
+        if (dto.getChipperId() != null) {
             Integer chipperId = dto.getChipperId();
             Account account = accountRepository.findById(chipperId)
                     .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + chipperId));
             animal.setChipper(account);
         }
-        if (dto.getChippingLocationId() != null){
+        if (dto.getChippingLocationId() != null) {
             Long chippingLocationId = dto.getChippingLocationId();
             Location chippingLocation = locationRepository.findById(chippingLocationId)
                     .orElseThrow(() -> new NotFoundException("Location with this id has not found: " + chippingLocationId));

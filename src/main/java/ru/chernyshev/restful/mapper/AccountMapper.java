@@ -9,7 +9,7 @@ public class AccountMapper implements Mapper<Account, AccountDto> {
 
     @Override
     public AccountDto toDto(Account account) {
-        return new AccountDto(account.getId(), account.getFirstName(), account.getLastName(), account.getEmail(), null);
+        return new AccountDto(account.getId(), account.getFirstName(), account.getLastName(), account.getEmail(), account.getPassword());
     }
 
 }

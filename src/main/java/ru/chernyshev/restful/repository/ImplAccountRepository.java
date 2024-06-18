@@ -46,10 +46,9 @@ public class ImplAccountRepository implements CustomAccountRepository {
             predicates.add(predicateEmail);
         }
 
-        for (Predicate predicate : predicates) {
-            query.where(predicate)
-                    .orderBy(criteriaBuilder.asc(root.get("id")));
-        }
+        Predicate globalPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        query.where(globalPredicate)
+                .orderBy(criteriaBuilder.asc(root.get("id")));
 
 
         return entityManager.createQuery(query)

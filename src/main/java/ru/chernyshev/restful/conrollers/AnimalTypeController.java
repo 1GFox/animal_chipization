@@ -1,13 +1,16 @@
 package ru.chernyshev.restful.conrollers;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.chernyshev.restful.dto.AnimalTypeDto;
 import ru.chernyshev.restful.service.AnimalTypeService;
 
+@Validated
 @RestController
 @RequestMapping("/animals/types")
 public class AnimalTypeController {
@@ -16,7 +19,7 @@ public class AnimalTypeController {
     private AnimalTypeService animalTypeService;
 
     @PostMapping
-    public ResponseEntity<AnimalTypeDto> createAnimalType(@RequestBody AnimalTypeDto animalTypeDto) {
+    public ResponseEntity<AnimalTypeDto> createAnimalType(@RequestBody @Valid AnimalTypeDto animalTypeDto) {
         AnimalTypeDto dto = animalTypeService.createAnimalType(animalTypeDto);
 
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
@@ -28,7 +31,7 @@ public class AnimalTypeController {
     }
 
     @PutMapping("/{typeId}")
-    public AnimalTypeDto changeAnimalType(@PathVariable @Min(1) Long typeId, @RequestBody AnimalTypeDto animalTypeDto) {
+    public AnimalTypeDto changeAnimalType(@PathVariable @Min(1) Long typeId, @RequestBody @Valid AnimalTypeDto animalTypeDto) {
         return animalTypeService.updateAnimalType(typeId, animalTypeDto);
     }
 

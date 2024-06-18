@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.chernyshev.restful.domain.Location;
 import ru.chernyshev.restful.dto.LocationDto;
+import ru.chernyshev.restful.exception.DataConflictException;
 import ru.chernyshev.restful.exception.NotFoundException;
 import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.LocationRepository;
@@ -17,6 +18,12 @@ public class LocationService {
     private LocationRepository locationRepository;
 
     public LocationDto setLocation(LocationDto dto) {
+
+        boolean check = locationRepository.existsByLatitudeAndLongitude(dto.getLatitude(), dto.getLongitude());
+
+        if (check){
+            throw new DataConflictException("Location with this coordinates already exists");
+        }
 
         Location location = new Location();
 
@@ -38,12 +45,8 @@ public class LocationService {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Location with this id has not found: " + id));
 
-        if (dto.getLongitude() != null) {
-            location.setLongitude(dto.getLongitude());
-        }
-        if (dto.getLatitude() != null) {
-            location.setLatitude(dto.getLatitude());
-        }
+        location.setLongitude(dto.getLongitude());
+        location.setLatitude(dto.getLatitude());
 
 
         locationRepository.save(location);

@@ -8,4 +8,6 @@ import ru.chernyshev.restful.domain.Location;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
+    boolean existsByLatitudeAndLongitude(Double latitude, Double longitude);
+
 }

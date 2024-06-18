@@ -7,4 +7,6 @@ import ru.chernyshev.restful.domain.AnimalType;
 @Repository
 public interface AnimalTypeRepository extends JpaRepository<AnimalType, Long> {
 
+    boolean existsByType(String type);
+
 }

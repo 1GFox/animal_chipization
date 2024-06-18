@@ -1,6 +1,9 @@
 package ru.chernyshev.restful.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,17 +21,42 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnimalDto {
+
     private Long id;
+
+
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
     private Float weight;
+
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
     private Float length;
+
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
     private Float height;
+
+    @NotNull
     private Gender gender;
+
     private LifeStatus lifeStatus;
+
     private LocalDateTime chippingDateTime;
+
+    @NotNull
+    @Min(1)
     private Integer chipperId;
-    private List<Long> animalTypes = new ArrayList<>();
+
     private LocalDateTime deathDateTime;
+
+    @NotNull
+    @Min(1)
     private Long chippingLocationId;
-    private List<Long> visitedLocations;
+
+    @NotNull
+    private List<Long> animalTypes = new ArrayList<>();
+
+    private List<Long> visitedLocations = new ArrayList<>();
 
 }
