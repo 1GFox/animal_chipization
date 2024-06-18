@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.chernyshev.restful.domain.AnimalType;
 import ru.chernyshev.restful.dto.AnimalTypeDto;
 import ru.chernyshev.restful.exception.NotFoundException;
-import ru.chernyshev.restful.mapper.AnimalTypeMapper;
+import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.AnimalTypeRepository;
 
 @Service
@@ -13,7 +13,7 @@ public class AnimalTypeService {
     @Autowired
     private AnimalTypeRepository animalTypeRepository;
     @Autowired
-    private AnimalTypeMapper animalTypeMapper;
+    private Mapper<AnimalType, AnimalTypeDto> animalTypeMapper;
 
 
     public AnimalTypeDto createAnimalType(AnimalTypeDto animalTypeDto) {

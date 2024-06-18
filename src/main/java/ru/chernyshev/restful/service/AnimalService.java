@@ -6,7 +6,7 @@ import ru.chernyshev.restful.domain.*;
 import ru.chernyshev.restful.dto.AnimalDto;
 import ru.chernyshev.restful.dto.ChangeAnimalTypeDto;
 import ru.chernyshev.restful.exception.NotFoundException;
-import ru.chernyshev.restful.mapper.AnimalMapper;
+import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.*;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ public class AnimalService {
     @Autowired
     private AnimalRepository animalRepository;
     @Autowired
-    private AnimalMapper animalMapper;
+    private Mapper<Animal, AnimalDto> animalMapper;
     @Autowired
     private AnimalTypeRepository animalTypeRepository;
     @Autowired

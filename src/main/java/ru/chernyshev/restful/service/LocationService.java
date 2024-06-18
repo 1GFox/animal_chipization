@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 import ru.chernyshev.restful.domain.Location;
 import ru.chernyshev.restful.dto.LocationDto;
 import ru.chernyshev.restful.exception.NotFoundException;
-import ru.chernyshev.restful.mapper.LocationMapper;
+import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.LocationRepository;
 
 @Service
 public class LocationService {
 
     @Autowired
-    private LocationMapper locationMapper;
+    private Mapper<Location, LocationDto> locationMapper;
     @Autowired
     private LocationRepository locationRepository;
 
