@@ -55,7 +55,8 @@ public class AnimalDto {
     private Long chippingLocationId;
 
     @NotNull
-    private List<Long> animalTypes = new ArrayList<>();
+    private List<@Min(1) Long> animalTypes = new ArrayList<>();
+
 
     private List<Long> visitedLocations = new ArrayList<>();
 

@@ -48,15 +48,14 @@ public class AnimalTypeService {
         AnimalType animalType = animalTypeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Animal type with this id has not found: " + id));
 
-
         boolean check = animalTypeRepository.existsByType(dto.getType());
-        if (check){
+        if (check) {
             throw new DataConflictException("This type already exists");
         }
 
-        if (dto.getType() != null) {
-            animalType.setType(dto.getType());
-        }
+
+        animalType.setType(dto.getType());
+
 
         animalTypeRepository.save(animalType);
 
@@ -68,7 +67,7 @@ public class AnimalTypeService {
                 .orElseThrow(() -> new NotFoundException("Animal type with this id has not found: " + id));
 
         List<Animal> animalsWithThisType = animalType.getAnimalsWithThisType();
-        if (!animalsWithThisType.isEmpty()){
+        if (!animalsWithThisType.isEmpty()) {
             throw new InvalidDataException("There is some animals with this type");
         }
 

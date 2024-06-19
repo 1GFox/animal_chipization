@@ -40,12 +40,6 @@ public class AnimalService {
             throw new InvalidDataException("Size of listTypes have to be greater then 0");
         }
 
-        for (Long typeId : listOfTypes) {
-            if (typeId == null || typeId <= 0) {
-                throw new InvalidDataException("Type id have to be greater than 0 and not be null");
-            }
-        }
-
 
         Animal animal = new Animal();
         animal.setHeight(dto.getHeight());
@@ -182,7 +176,7 @@ public class AnimalService {
         AnimalType oldAnimalType = animalTypeRepository.findById(dto.getOldTypeId())
                 .orElseThrow(() -> new NotFoundException("Animal type with this id has not found: " + dto.getOldTypeId()));
 
-        AnimalType newAnimalType = animalTypeRepository.findById(dto.getOldTypeId())
+        AnimalType newAnimalType = animalTypeRepository.findById(dto.getNewTypeId())
                 .orElseThrow(() -> new NotFoundException("Type with this id has not found: " + dto.getOldTypeId()));
 
 
@@ -195,6 +189,7 @@ public class AnimalService {
         }
 
         animalTypes.add(newAnimalType);
+        animalTypes.remove(oldAnimalType);
 
         animalRepository.save(animal);
 
@@ -208,6 +203,15 @@ public class AnimalService {
 
         AnimalType type = animalTypeRepository.findById(typeId)
                 .orElseThrow(() -> new NotFoundException("Type with this id has not found: " + typeId));
+
+
+        if (!animalTypes.contains(type)) {
+            throw new NotFoundException("This animal does not have this type");
+        }
+        if (animalTypes.size() == 1 && animalTypes.contains(type)) {
+            throw new InvalidDataException("This animal has only this type");
+        }
+
         animalTypes.remove(type);
 
         animalRepository.save(animal);
