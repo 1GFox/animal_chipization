@@ -3,9 +3,11 @@ package ru.chernyshev.restful.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.chernyshev.restful.domain.Account;
+import ru.chernyshev.restful.domain.Animal;
 import ru.chernyshev.restful.dto.AccountDto;
 import ru.chernyshev.restful.exception.DataConflictException;
 import ru.chernyshev.restful.exception.InaccessibleEntityException;
+import ru.chernyshev.restful.exception.InvalidDataException;
 import ru.chernyshev.restful.exception.NotFoundException;
 import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.AccountRepository;
@@ -67,6 +69,11 @@ public class AccountService {
     public void deleteAccount(Integer id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new InaccessibleEntityException("Account with this id has not found: " + id));
+
+        List<Animal> chippedAnimals = account.getChippedAnimals();
+        if (!chippedAnimals.isEmpty()){
+            throw new InvalidDataException("You have chipped some animals!");
+        }
 
         accountRepository.delete(account);
     }

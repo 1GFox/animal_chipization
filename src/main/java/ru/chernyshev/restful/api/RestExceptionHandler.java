@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.chernyshev.restful.exception.DataConflictException;
-import ru.chernyshev.restful.exception.InaccessibleEntityException;
-import ru.chernyshev.restful.exception.InvalidDataException;
-import ru.chernyshev.restful.exception.NotFoundException;
+import ru.chernyshev.restful.exception.*;
 
 
 @RestControllerAdvice
@@ -38,6 +35,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({InvalidDataException.class})
     public ResponseEntity<String> handDataConflictException(InvalidDataException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({StatusCodeCreated.class})
+    public ResponseEntity<String> handCreatedCode(StatusCodeCreated e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CREATED);
     }
 
 //    @ExceptionHandler({Exception.class})

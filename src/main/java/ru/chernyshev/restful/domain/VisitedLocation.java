@@ -23,11 +23,11 @@ public class VisitedLocation {
     @Column(name = "date_time")
     private LocalDateTime dateTime;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "location_id")
     private Location location;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "animal_id")
     private Animal animal;
 

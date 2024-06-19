@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,4 +25,12 @@ public class Location {
     private Double latitude;
     @Column(name = "longitude")
     private Double longitude;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    private List<Animal> animalsChippedHere = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.REMOVE)
+    private List<VisitedLocation> visitedLocationsWithThisLoc = new ArrayList<>();
+
+
 }

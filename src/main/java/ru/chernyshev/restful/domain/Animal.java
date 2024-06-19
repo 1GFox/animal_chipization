@@ -37,22 +37,22 @@ public class Animal {
     @Column(name = "death_date_time")
     private LocalDateTime deathDateTime;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "chipping_location_id")
     private Location chippingLocation;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "chipper_id")
     private Account chipper;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "animal_types_rel",
             joinColumns = @JoinColumn(name = "animal_id"),
             inverseJoinColumns = @JoinColumn(name = "type_id"))
     private List<AnimalType> animalTypes = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.REMOVE)
+    @OneToMany (mappedBy = "animal", cascade = CascadeType.REMOVE)
     private List<VisitedLocation> visitedLocations = new ArrayList<>();
 
 }

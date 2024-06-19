@@ -2,12 +2,16 @@ package ru.chernyshev.restful.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.chernyshev.restful.domain.Animal;
 import ru.chernyshev.restful.domain.AnimalType;
 import ru.chernyshev.restful.dto.AnimalTypeDto;
 import ru.chernyshev.restful.exception.DataConflictException;
+import ru.chernyshev.restful.exception.InvalidDataException;
 import ru.chernyshev.restful.exception.NotFoundException;
 import ru.chernyshev.restful.mapper.Mapper;
 import ru.chernyshev.restful.repository.AnimalTypeRepository;
+
+import java.util.List;
 
 @Service
 public class AnimalTypeService {
@@ -62,6 +66,11 @@ public class AnimalTypeService {
     public void deleteAnimalType(Long id) {
         AnimalType animalType = animalTypeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Animal type with this id has not found: " + id));
+
+        List<Animal> animalsWithThisType = animalType.getAnimalsWithThisType();
+        if (!animalsWithThisType.isEmpty()){
+            throw new InvalidDataException("There is some animals with this type");
+        }
 
         animalTypeRepository.delete(animalType);
     }

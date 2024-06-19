@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.chernyshev.restful.domain.*;
 import ru.chernyshev.restful.dto.AnimalDto;
 import ru.chernyshev.restful.dto.ChangeAnimalTypeDto;
+import ru.chernyshev.restful.exception.DataConflictException;
 import ru.chernyshev.restful.exception.InvalidDataException;
 import ru.chernyshev.restful.exception.NotFoundException;
 import ru.chernyshev.restful.mapper.Mapper;
@@ -61,6 +62,10 @@ public class AnimalService {
         animal.setChippingLocation(location);
 
 
+        List<Animal> animalsChippedHere = location.getAnimalsChippedHere();
+        animalsChippedHere.add(animal);
+
+
         List<AnimalType> animalTypes = dto.getAnimalTypes()
                 .stream()
                 .map(typeId -> animalTypeRepository.findById(typeId))
@@ -73,6 +78,10 @@ public class AnimalService {
         Account account = accountRepository.findById(chipperId)
                 .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + chipperId));
         animal.setChipper(account);
+
+
+        List<Animal> chippedAnimals = account.getChippedAnimals();
+        chippedAnimals.add(animal);
 
 
         animalRepository.save(animal);
@@ -90,19 +99,20 @@ public class AnimalService {
     public AnimalDto updateAnimalInfo(Long id, AnimalDto dto) {
         Animal animal = animalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Animal with this id has not found: " + id));
-        if (dto.getWeight() != null) {
-            animal.setWeight(dto.getWeight());
-        }
-        if (dto.getHeight() != null) {
-            animal.setHeight(dto.getHeight());
-        }
-        if (dto.getLength() != null) {
-            animal.setLength(dto.getLength());
-        }
-        if (dto.getGender() != null) {
-            animal.setGender(dto.getGender());
-        }
-        if (dto.getLifeStatus() != null && dto.getLifeStatus() == LifeStatus.DEAD) {
+
+
+        animal.setWeight(dto.getWeight());
+
+
+        animal.setHeight(dto.getHeight());
+
+
+        animal.setLength(dto.getLength());
+
+
+        animal.setGender(dto.getGender());
+
+        if (dto.getLifeStatus() != null && dto.getLifeStatus() == LifeStatus.DEAD && animal.getLifeStatus() != LifeStatus.DEAD) {
             animal.setLifeStatus(dto.getLifeStatus());
             animal.setDeathDateTime(LocalDateTime.now());
         }
@@ -110,18 +120,26 @@ public class AnimalService {
             animal.setLifeStatus(dto.getLifeStatus());
             animal.setDeathDateTime(null);
         }
-        if (dto.getChipperId() != null) {
-            Integer chipperId = dto.getChipperId();
-            Account account = accountRepository.findById(chipperId)
-                    .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + chipperId));
-            animal.setChipper(account);
+
+        Integer chipperId = dto.getChipperId();
+        Account account = accountRepository.findById(chipperId)
+                .orElseThrow(() -> new NotFoundException("Account with this id has not found: " + chipperId));
+        animal.setChipper(account);
+
+
+        List<VisitedLocation> visitedLocations = animal.getVisitedLocations();
+        Long chippingLocationId = dto.getChippingLocationId();
+
+        if (!visitedLocations.isEmpty()) {
+            if (chippingLocationId.equals(visitedLocations.get(0).getLocation().getId())) {
+                throw new InvalidDataException("This location is first visited location of this animal");
+            }
         }
-        if (dto.getChippingLocationId() != null) {
-            Long chippingLocationId = dto.getChippingLocationId();
-            Location chippingLocation = locationRepository.findById(chippingLocationId)
-                    .orElseThrow(() -> new NotFoundException("Location with this id has not found: " + chippingLocationId));
-            animal.setChippingLocation(chippingLocation);
-        }
+
+        Location chippingLocation = locationRepository.findById(chippingLocationId)
+                .orElseThrow(() -> new NotFoundException("Location with this id has not found: " + chippingLocationId));
+        animal.setChippingLocation(chippingLocation);
+
 
         animalRepository.save(animal);
 
@@ -131,6 +149,13 @@ public class AnimalService {
     public void deleteAnimal(Long id) {
         Animal animal = animalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Animal with this id has not found: " + id));
+
+        List<VisitedLocation> visitedLocations = animal.getVisitedLocations();
+
+        if (!visitedLocations.isEmpty()) {
+            throw new InvalidDataException("Animal has left the chipping location");
+        }
+
         animalRepository.delete(animal);
     }
 
@@ -154,14 +179,21 @@ public class AnimalService {
                 .orElseThrow(() -> new NotFoundException("Animal with this id has not found: " + id));
         List<AnimalType> animalTypes = animal.getAnimalTypes();
 
-        Long oldTypeId = dto.getOldTypeId();
-        AnimalType oldAnimalType = animalTypeRepository.findById(oldTypeId)
-                .orElseThrow(() -> new NotFoundException("Type with this id has not found: " + oldTypeId));
-        animalTypes.remove(oldAnimalType);
+        AnimalType oldAnimalType = animalTypeRepository.findById(dto.getOldTypeId())
+                .orElseThrow(() -> new NotFoundException("Animal type with this id has not found: " + dto.getOldTypeId()));
 
-        Long newTypeId = dto.getNewTypeId();
-        AnimalType newAnimalType = animalTypeRepository.findById(newTypeId)
-                .orElseThrow(() -> new NotFoundException("Type with this id has not found: " + oldTypeId));
+        AnimalType newAnimalType = animalTypeRepository.findById(dto.getOldTypeId())
+                .orElseThrow(() -> new NotFoundException("Type with this id has not found: " + dto.getOldTypeId()));
+
+
+        if (animalTypes.contains(newAnimalType)) {
+            throw new DataConflictException("This animal already has animal type with this id: " + dto.getNewTypeId());
+        }
+
+        if (!animalTypes.contains(oldAnimalType)) {
+            throw new NotFoundException("This animal does not have animal type with this id: " + dto.getOldTypeId());
+        }
+
         animalTypes.add(newAnimalType);
 
         animalRepository.save(animal);

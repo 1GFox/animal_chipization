@@ -9,6 +9,13 @@ public class VisitedLocationMapper implements Mapper<VisitedLocation, VisitedLoc
 
     @Override
     public VisitedLocationDto toDto(VisitedLocation visitedLocation) {
-        return new VisitedLocationDto(visitedLocation.getId(), visitedLocation.getDateTime(), visitedLocation.getLocation().getId());
+        VisitedLocationDto visitedLocationDto = new VisitedLocationDto();
+
+        visitedLocationDto.setId(visitedLocation.getId());
+        visitedLocationDto.setDateTimeOfVisitLocationPoint(visitedLocation.getDateTime());
+        visitedLocationDto.setLocationPointId(visitedLocation.getLocation().getId());
+
+        return visitedLocationDto;
     }
+
 }

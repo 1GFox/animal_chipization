@@ -15,21 +15,24 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/animals")
+@RequestMapping("/animals/{animalId}/locations")
 public class VisitedLocationController {
 
     @Autowired
     private VisitedLocationService visitedLocationService;
 
 
-    @PostMapping("/{animalId}/locations/{pointId}")
-    public ResponseEntity<VisitedLocationDto> addVisitedLocationPoint(@PathVariable Long animalId, @PathVariable Long pointId) {
+    @PostMapping("/{pointId}")
+    public ResponseEntity<VisitedLocationDto> addVisitedLocationPoint(@PathVariable @Min(1) Long animalId,
+                                                                      @PathVariable @Min(1) Long pointId) {
+
         VisitedLocationDto dto = visitedLocationService.addVisitedLocation(animalId, pointId);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
+
     }
 
-    @GetMapping("/{animalId}/locations")
-    public List<VisitedLocationDto> getVisitedLocations(@PathVariable Long animalId,
+    @GetMapping
+    public List<VisitedLocationDto> getVisitedLocations(@PathVariable @Min(1) Long animalId,
                                                         @RequestParam(required = false) LocalDateTime startDateTime,
                                                         @RequestParam(required = false) LocalDateTime endDateTime,
                                                         @RequestParam(defaultValue = "0") @Min(0) Integer from,
@@ -39,10 +42,18 @@ public class VisitedLocationController {
 
     }
 
-    @PutMapping("/{animalId}/locations")
-    public VisitedLocationDto updateVisitedLocation(@PathVariable Long animalId, @RequestBody @Valid VisitedLocationDto dto) {
+    @PutMapping
+    public VisitedLocationDto updateVisitedLocation(@PathVariable @Min(1) Long animalId,
+                                                    @RequestBody @Valid VisitedLocationDto dto) {
 
         return visitedLocationService.updateVisitedLocation(animalId, dto);
+
+    }
+
+    @DeleteMapping("/{visitedPointId}")
+    public void deleteVisitedLocation(@PathVariable @Min(1) Long animalId, @PathVariable @Min(1) Long visitedPointId) {
+
+        visitedLocationService.deleteVisitedLocation(animalId, visitedPointId);
 
     }
 }
