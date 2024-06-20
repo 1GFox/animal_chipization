@@ -47,16 +47,21 @@ public class VisitedLocationService {
 
         List<VisitedLocation> visitedLocations = animal.getVisitedLocations();
 
-        if (visitedLocations.isEmpty() && animal.getChippingLocation().equals(location)) {
+        List<VisitedLocation> sortedVisitedLocations = visitedLocations.stream()
+                .sorted(Comparator.comparing(VisitedLocation::getDateTime))
+                .toList();
+
+        if (sortedVisitedLocations.isEmpty() && animal.getChippingLocation().equals(location)) {
 
             throw new InvalidDataException("This animal have not left this location yet");
 
         }
 
 
-        if (!visitedLocations.isEmpty()) {
+        if (!sortedVisitedLocations.isEmpty()) {
 
-            VisitedLocation lustVisitedLocation = visitedLocations.get(0);
+            int size = sortedVisitedLocations.size();
+            VisitedLocation lustVisitedLocation = sortedVisitedLocations.get(size - 1);
 
             if (lustVisitedLocation.getLocation().getId().equals(location.getId())) {
 
@@ -78,9 +83,7 @@ public class VisitedLocationService {
         List<VisitedLocation> visitedLocationsWithThisLoc = location.getVisitedLocationsWithThisLoc();
         visitedLocationsWithThisLoc.add(visitedLocation);
 
-
         visitedLocationRepository.save(visitedLocation);
-
         return visitedLocationMapper.toDto(visitedLocation);
     }
 
@@ -109,33 +112,42 @@ public class VisitedLocationService {
 
 
         List<VisitedLocation> visitedLocations = animal.getVisitedLocations();
+        List<VisitedLocation> sortedVisitedLocations = visitedLocations.stream()
+                .sorted(Comparator.comparing(VisitedLocation::getDateTime))
+                .toList();
 
 
-        boolean check = visitedLocations.stream()
+        boolean check = sortedVisitedLocations.stream()
                 .noneMatch(visitLoc -> visitLoc.getId().equals(visitedLocation.getId()));
         if (check) {
             throw new NotFoundException("This animal have not been on this locations");
         }
 
-        if (visitedLocations.size() > 2) {
+        if (sortedVisitedLocations.size() > 2) {
 
-            int indexOfVisitedLoc = visitedLocations.indexOf(visitedLocation);
+            int indexOfVisitedLoc = sortedVisitedLocations.indexOf(visitedLocation);
 
-            if (indexOfVisitedLoc == visitedLocations.size() - 1) {
+            if (indexOfVisitedLoc == sortedVisitedLocations.size() - 1) {
 
-                if (visitedLocations.get(indexOfVisitedLoc - 1).getLocation().equals(location)) {
+                if (sortedVisitedLocations.get(indexOfVisitedLoc - 1).getLocation().equals(location)) {
                     throw new InvalidDataException("You can`t update last or next visited location on itself");
 
                 }
-            } else if (visitedLocations.get(indexOfVisitedLoc - 1).getLocation().equals(location) ||
-                    visitedLocations.get(indexOfVisitedLoc + 1).getLocation().equals(location)) {
+
+            } else if (indexOfVisitedLoc == 0) {
+                if (sortedVisitedLocations.get(indexOfVisitedLoc + 1).getLocation().equals(location)) {
+                    throw new InvalidDataException("You can`t update last or next visited location on itself");
+                }
+
+            } else if (sortedVisitedLocations.get(indexOfVisitedLoc - 1).getLocation().equals(location) ||
+                    sortedVisitedLocations.get(indexOfVisitedLoc + 1).getLocation().equals(location)) {
 
                 throw new InvalidDataException("You can`t update last or next visited location on itself");
 
             }
         }
 
-        VisitedLocation firstVisitedLocation = visitedLocations.get(0);
+        VisitedLocation firstVisitedLocation = sortedVisitedLocations.get(0);
 
 
         if (firstVisitedLocation.getId().equals(visitedLocation.getId()) && animal.getChippingLocation().equals(location)) {
@@ -163,34 +175,33 @@ public class VisitedLocationService {
                 .orElseThrow(() -> new NotFoundException("Visited location with this id has not found: " + visitedPointId));
 
         List<VisitedLocation> visitedLocations = animal.getVisitedLocations();
+        List<VisitedLocation> sortedVisitedLocations = visitedLocations.stream()
+                .sorted(Comparator.comparing(VisitedLocation::getDateTime))
+                .toList();
 
 
-        boolean check = visitedLocations.stream()
+        boolean check = sortedVisitedLocations.stream()
                 .noneMatch(visitLoc -> visitLoc.getId().equals(visitedLocation.getId()));
         if (check) {
             throw new NotFoundException("Animal with this id does not have this visited locations");
         }
 
-        if (visitedLocations.size() > 1) {
 
-            int size = visitedLocations.size();
-            VisitedLocation firstVisitedLocation = visitedLocations.get(size - 1);
-            VisitedLocation secondVisitedLocation = visitedLocations.get(size - 2);
+        if (sortedVisitedLocations.size() > 1) {
+
+            VisitedLocation firstVisitedLocation = sortedVisitedLocations.get(0);
+            VisitedLocation secondVisitedLocation = sortedVisitedLocations.get(1);
 
             if (visitedLocation.getId().equals(firstVisitedLocation.getId()) &&
                     secondVisitedLocation.getLocation().getId().equals(animal.getChippingLocation().getId())) {
 
-                visitedLocations.remove(secondVisitedLocation);
+                visitedLocationRepository.delete(secondVisitedLocation);
+
             }
 
         }
 
-
-        visitedLocations.remove(visitedLocation);
-        animal.setVisitedLocations(visitedLocations);
-
-
-        animalRepository.save(animal);
+        visitedLocationRepository.delete(visitedLocation);
 
     }
 

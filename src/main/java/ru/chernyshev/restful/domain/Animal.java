@@ -37,11 +37,11 @@ public class Animal {
     @Column(name = "death_date_time")
     private LocalDateTime deathDateTime;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "chipping_location_id")
     private Location chippingLocation;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "chipper_id")
     private Account chipper;
 

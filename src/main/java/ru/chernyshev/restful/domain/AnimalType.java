@@ -24,7 +24,7 @@ public class AnimalType {
     @Column
     private String type;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany
     @JoinTable(name = "animal_types_rel",
             inverseJoinColumns = @JoinColumn(name = "animal_id"),
             joinColumns = @JoinColumn(name = "type_id"))

@@ -13,6 +13,7 @@ import ru.chernyshev.restful.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,10 +123,13 @@ public class AnimalService {
 
 
         List<VisitedLocation> visitedLocations = animal.getVisitedLocations();
-        Long chippingLocationId = dto.getChippingLocationId();
+        List<VisitedLocation> sortedVisitedLocations = visitedLocations.stream()
+                .sorted(Comparator.comparing(VisitedLocation::getDateTime))
+                .toList();
 
-        if (!visitedLocations.isEmpty()) {
-            if (chippingLocationId.equals(visitedLocations.get(0).getLocation().getId())) {
+        Long chippingLocationId = dto.getChippingLocationId();
+        if (!sortedVisitedLocations.isEmpty()) {
+            if (chippingLocationId.equals(sortedVisitedLocations.get(0).getLocation().getId())) {
                 throw new InvalidDataException("This location is first visited location of this animal");
             }
         }

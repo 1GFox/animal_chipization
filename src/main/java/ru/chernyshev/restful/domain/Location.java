@@ -26,10 +26,10 @@ public class Location {
     @Column(name = "longitude")
     private Double longitude;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "chippingLocation")
     private List<Animal> animalsChippedHere = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "location")
     private List<VisitedLocation> visitedLocationsWithThisLoc = new ArrayList<>();
 
 

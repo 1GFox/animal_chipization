@@ -30,7 +30,7 @@ public class Account {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "chipper")
     private List<Animal> chippedAnimals = new ArrayList<>();
 
 

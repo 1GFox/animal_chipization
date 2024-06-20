@@ -3,6 +3,7 @@ package ru.chernyshev.restful.conrollers;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -65,8 +66,8 @@ public class AnimalController {
     }
 
     @GetMapping("/search")
-    public List<AnimalDto> searchByFilter(@RequestParam(required = false) LocalDateTime startDateTime,
-                                          @RequestParam(required = false) LocalDateTime endDateTime,
+    public List<AnimalDto> searchByFilter(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
+                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime,
                                           @RequestParam(required = false) Gender gender,
                                           @RequestParam(required = false) @Min(1) Integer chipperId,
                                           @RequestParam(required = false) @Min(1) Long chippingLocationId,
